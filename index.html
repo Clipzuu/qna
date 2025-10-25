@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BULK - Q&A Knowledge Base</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c 0%, #2a3c7f 50%, #4a5fcf 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.3rem;
+            margin-top: 10px;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        .search-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+            font-size: 1.5rem;
+        }
+        
+        .search-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px 0 0 10px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .search-box button {
+            padding: 15px 25px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 10px 10px 0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .search-box button:hover {
+            background: #2980b9;
+        }
+        
+        .search-stats {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .results-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .qa-item {
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .qa-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .qa-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .qa-item:hover::before {
+            opacity: 1;
+        }
+        
+        .qa-question {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .qa-question::before {
+            content: "Q:";
+            color: #3498db;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .qa-answer {
+            color: #34495e;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .qa-answer::before {
+            content: "A:";
+            color: #2ecc71;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 50px 30px;
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 1.2rem;
+        }
+        
+        .feature-tag {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 8px;
+            margin-top: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+        
+        .highlight {
+            background-color: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .search-box input {
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+            
+            .search-box button {
+                border-radius: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">❓</div>
+            <h1>BULK Q&A Knowledge Base</h1>
+            <p class="subtitle">Everything you need to know about BULK - Solana's High-Performance Trading Infrastructure</p>
+        </header>
+        
+        <div class="search-section">
+            <h2 class="section-title">Search BULK Questions</h2>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Enter keywords to search through BULK questions...">
+                <button id="searchButton">Search</button>
+            </div>
+            <div class="search-stats">
+                <span id="searchStats">Showing all 14 questions about BULK</span>
+                <span id="resultsCount"></span>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <h2 class="section-title">BULK Questions & Answers</h2>
+            <div id="qaResults">
+                <!-- Q&A items will be displayed here -->
+            </div>
+        </div>
+        
+        <footer>
+            <p>BULK Q&A Knowledge Base &copy; 2023 | Solana's High-Performance Trading Infrastructure</p>
+        </footer>
+    </div>
+
+    <script>
+        // Complete Q&A data about BULK
+        const qaDatabase = [
+            {
+                id: 1,
+                question: "What is BULK?",
+                answer: "BULK is a specialized on-chain trading infrastructure built on Solana. It acts as a high-performance execution layer that delivers professional-grade trading speed, fairness, and scalability — all while staying fully decentralized and integrated with Solana's validator network.",
+                tags: ["definition", "overview"]
+            },
+            {
+                id: 2,
+                question: "How is BULK different from other trading platforms on Solana?",
+                answer: "Unlike typical decentralized exchanges that rely on Solana's general L1 transaction queue, BULK integrates directly with validators through its custom client 'Bulk-agave'. This allows BULK to bypass normal bottlenecks and achieve ultra-fast trade execution (5–20ms latency).",
+                tags: ["comparison", "advantages"]
+            },
+            {
+                id: 3,
+                question: "What is the concept behind BULK's architecture?",
+                answer: "Think of Solana as a multi-lane highway for general-purpose applications. BULK is like a Formula 1 track built alongside it — purpose-built for trading performance. It's an add-on layer that enhances speed without replacing Solana's main infrastructure.",
+                tags: ["architecture", "concept"]
+            },
+            {
+                id: 4,
+                question: "What is Bulk-agave and Bulk-tile?",
+                answer: "Bulk-agave: A forked version of the Jito-Agave validator client that integrates BULK directly into Solana's network. Bulk-tile: A specialized sidecar that runs parallel to Solana's standard runtime, handling high-speed order processing.",
+                tags: ["components", "technology"]
+            },
+            {
+                id: 5,
+                question: "How fast is BULK compared to other decentralized trading systems?",
+                answer: "BULK achieves an async 20ms matching tick and 5–20ms latency, allowing high-frequency trading and near-instant order execution — speeds not seen before in decentralized finance.",
+                tags: ["performance", "speed"]
+            },
+            {
+                id: 6,
+                question: "How does BULK ensure fairness in trading?",
+                answer: "BULK uses a cryptographic sort key to enforce deterministic First-In, First-Out (FIFO) order matching. This means no front-running, no reordering, and completely fair execution for every user.",
+                tags: ["fairness", "security"]
+            },
+            {
+                id: 7,
+                question: "Are trades on BULK gasless?",
+                answer: "Yes ✅ Orders are placed gaslessly within BULK's network. The only fees users pay are standard exchange fees (like order placement), not blockchain gas fees.",
+                tags: ["fees", "gasless"]
+            },
+            {
+                id: 8,
+                question: "Does BULK use bridges or external sequencers?",
+                answer: "No ❌ All assets remain SPL-native on Solana, stored in non-custodial PDAs (Program Derived Accounts). No external bridges or sequencers are required — meaning lower risk and zero fragmentation.",
+                tags: ["security", "decentralization"]
+            },
+            {
+                id: 9,
+                question: "How does BULK support Solana's ecosystem?",
+                answer: "BULK shares 30% of all taker fees with Bulk-agave validators. This boosts Solana's validator and staker APY by 1–2%, creating a mutually beneficial ('symbiotic') relationship between BULK and Solana.",
+                tags: ["ecosystem", "validators"]
+            },
+            {
+                id: 10,
+                question: "Who can use BULK?",
+                answer: "BULK is designed for all types of traders — from retail to institutional. It offers developer SDKs, full CCXT and FIX API support for professional trading integrations.",
+                tags: ["users", "access"]
+            },
+            {
+                id: 11,
+                question: "Is BULK decentralized?",
+                answer: "Absolutely. BULK is a leaderless, validator-run network. There's no central operator or single point of failure, ensuring censorship resistance and credible neutrality for all market participants.",
+                tags: ["decentralization", "philosophy"]
+            },
+            {
+                id: 12,
+                question: "What makes BULK unique?",
+                answer: "BULK is the first network to deliver centralized exchange-level speed (sub-20ms) in a fully decentralized environment, integrated natively with Solana for security and settlement.",
+                tags: ["uniqueness", "innovation"]
+            },
+            {
+                id: 13,
+                question: "What's the current status and roadmap for BULK?",
+                answer: "BULK's Alphanet has been a major success. The team is targeting a mainnet launch in Q4 2025. Users are encouraged to follow updates on social channels for upcoming announcements and early access.",
+                tags: ["roadmap", "status"]
+            },
+            {
+                id: 14,
+                question: "What is BULK's ultimate vision?",
+                answer: "To build the ultimate decentralized orderbook — combining the speed of centralized exchanges with the security and openness of Solana. Their mission: Make markets better and bring Internet-scale capital markets on-chain.",
+                tags: ["vision", "mission"]
+            }
+        ];
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const searchStats = document.getElementById('searchStats');
+        const qaResults = document.getElementById('qaResults');
+        const resultsCount = document.getElementById('resultsCount');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            displayQA(qaDatabase);
+            updateStats(qaDatabase.length, qaDatabase.length);
+            
+            // Search functionality
+            searchButton.addEventListener('click', performSearch);
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            // Real-time search as user types
+            searchInput.addEventListener('input', performSearch);
+        });
+
+        // Perform search
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                displayQA(qaDatabase);
+                updateStats(qaDatabase.length, qaDatabase.length);
+                return;
+            }
+            
+            const filteredResults = qaDatabase.filter(item => 
+                item.question.toLowerCase().includes(searchTerm) ||
+                item.answer.toLowerCase().includes(searchTerm) ||
+                item.tags.some(tag => tag.includes(searchTerm))
+            );
+            
+            // Highlight search term in results
+            const highlightedResults = filteredResults.map(item => {
+                const highlightedQuestion = highlightText(item.question, searchTerm);
+                const highlightedAnswer = highlightText(item.answer, searchTerm);
+                return {
+                    ...item,
+                    question: highlightedQuestion,
+                    answer: highlightedAnswer
+                };
+            });
+            
+            displayQA(highlightedResults);
+            updateStats(filteredResults.length, qaDatabase.length, searchTerm);
+        }
+
+        // Highlight search term in text
+        function highlightText(text, term) {
+            if (!term) return text;
+            
+            const regex = new RegExp(`(${term})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // Display Q&A items
+        function displayQA(items) {
+            if (items.length === 0) {
+                qaResults.innerHTML = '<div class="no-results">No questions found matching your search. Try different keywords.</div>';
+                return;
+            }
+            
+            qaResults.innerHTML = '';
+            
+            items.forEach(item => {
+                const qaElement = document.createElement('div');
+                qaElement.className = 'qa-item';
+                
+                // Create tags HTML
+                const tagsHTML = item.tags.map(tag => 
+                    `<span class="feature-tag">${tag}</span>`
+                ).join('');
+                
+                qaElement.innerHTML = `
+                    <div class="qa-question">${item.question}</div>
+                    <div class="qa-answer">${item.answer}</div>
+                    <div>${tagsHTML}</div>
+                `;
+                qaResults.appendChild(qaElement);
+            });
+        }
+
+        // Update search statistics
+        function updateStats(resultsCount, totalCount, searchTerm = '') {
+            if (searchTerm) {
+                searchStats.textContent = `Found ${resultsCount} of ${totalCount} questions containing "${searchTerm}"`;
+            } else {
+                searchStats.textContent = `Showing all ${totalCount} questions about BULK`;
+            }
+        }
+    </script>
+</body>
+</html>
